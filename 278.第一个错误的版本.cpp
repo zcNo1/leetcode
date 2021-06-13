@@ -2,7 +2,7 @@
  * @Author       : zc
  * @Date         : 2021-06-13 11:27:33
  * @LastEditors  : zc
- * @LastEditTime : 2021-06-13 11:40:23
+ * @LastEditTime : 2021-06-13 11:55:17
  * @Description  : file content
  * @FilePath     : \leetcode\278.第一个错误的版本.cpp
  */
@@ -23,6 +23,7 @@ public:
             return n;
         }
         int l = 1, r = n;
+        // 为了避免整数溢出，必须这样计算二分法的mid值
         int m = l + (r - l) / 2;
         while (l < r) {
             if (isBadVersion(m)) {
@@ -30,6 +31,7 @@ public:
             } else {
                 l = m + 1;
             }
+            // 为了避免整数溢出，必须这样计算二分法的mid值
             m = l + (r - l) / 2;
         }
         return l;
