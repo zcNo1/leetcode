@@ -1,14 +1,8 @@
-package main
+package l1814
 
 import (
 	"log"
 )
-
-func main() {
-	log.Println(countNicePairs([]int{42, 11, 1, 97}))
-	log.Println(countNicePairs([]int{13, 10, 35, 24, 76}))
-	log.Println(countNicePairs([]int{442111244, 357716602, 131050131, 251794140, 4046404, 373969224, 1082801, 468525864, 384140537, 492968345}))
-}
 
 func countNicePairs(nums []int) int {
 	cntSub := make(map[int]int)
