@@ -1,31 +1,27 @@
 package l1079
 
-import "sort"
-
-
-AAB 1 + C 2 1 + C 3 1 =1+ 2 +3=6
-A 1
-AA 1
-AAA 1
-AAAB 1 + C 2 1 + C 3 1 + C 4 1
-AAABB 1 + C 2 1 * C 3 1 + C 3 1 * C 4 1 + C 4 1 * C 5 1
-
-
-AAABBC 1 + C 2 1 * C 3 1
-   1 2 3 4
-A
-
-n个字符=
+var res int
 
 func numTilePossibilities(tiles string) int {
-	tilesByte := []byte(tiles)
-	sort.Slice(tilesByte, func(i, j int) bool {
-		if i < j {
-			return true
+	cntTile := make(map[rune]int)
+
+	for _, tile := range tiles {
+		cntTile[tile]++
+	}
+
+	res = 0
+
+	dfs(cntTile)
+	return res
+}
+
+func dfs(cntTile map[rune]int) {
+	for tile, cnt := range cntTile {
+		if cnt > 0 {
+			res++
+			cntTile[tile]--
+			dfs(cntTile)
+			cntTile[tile]++
 		}
-		return false
-	})
-
-
-	return 0
+	}
 }
