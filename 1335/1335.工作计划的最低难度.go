@@ -1,6 +1,11 @@
 package l1335
 
+import "math"
+
+var res int
+
 func minDifficulty(jobDifficulty []int, d int) int {
+	res = math.MaxInt
 	if len(jobDifficulty) < d {
 		return -1
 	}
@@ -27,4 +32,8 @@ func minDifficulty(jobDifficulty []int, d int) int {
 	} else {
 		return jobDifficulty[len(jobDifficulty)-1] + minDifficulty(jobDifficulty[:len(jobDifficulty)-1], d-1)
 	}
+}
+
+func dsf(jobDifficulty []int) {
+
 }
