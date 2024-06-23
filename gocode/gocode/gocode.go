@@ -142,7 +142,7 @@ func longestConsecutive(nums []int) int {
 	return max
 }
 
-// TODO 560. 和为 K 的子数组
+// 560. 和为 K 的子数组
 func subarraySum(nums []int, k int) int {
 	ret := 0
 	cnt := make([]int, len(nums))
