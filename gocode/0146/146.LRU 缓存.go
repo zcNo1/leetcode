@@ -9,46 +9,6 @@ type DoubleListNode struct {
 	next *DoubleListNode
 }
 
-type DoubleList struct {
-	head *DoubleListNode
-	tail *DoubleListNode
-}
-
-func NewDoubleList() *DoubleList {
-	ret := &DoubleList{
-		head: &DoubleListNode{},
-		tail: &DoubleListNode{},
-	}
-	ret.head.next = ret.tail
-	ret.tail.pre = ret.head
-
-	return ret
-}
-
-func (d *DoubleList) AddTail(node *DoubleListNode) {
-	node.pre = d.tail.pre
-	node.pre.next = node
-
-	d.tail.pre = node
-	node.next = d.tail
-}
-
-func (d *DoubleList) DeleteNode(node *DoubleListNode) {
-	node.pre.next = node.next
-	node.next.pre = node.pre
-}
-
-func (d *DoubleList) DeleteHead() *DoubleListNode {
-	if d.head.next == d.tail {
-		return nil
-	}
-	head := d.head.next
-	d.head.next = head.next
-	head.next.pre = d.head
-
-	return head
-}
-
 func printNode(head *DoubleListNode) {
 	fmt.Println("--------------------")
 	cnt := 0
@@ -62,50 +22,85 @@ func printNode(head *DoubleListNode) {
 
 type LRUCache struct {
 	where    map[int]*DoubleListNode
-	sortList *DoubleList
+	oldHead  *DoubleListNode
+	NewTail  *DoubleListNode
 	capacity int
 }
 
 func Constructor(capacity int) LRUCache {
 	ret := LRUCache{
 		where:    make(map[int]*DoubleListNode, capacity),
-		sortList: NewDoubleList(),
+		oldHead:  &DoubleListNode{},
+		NewTail:  &DoubleListNode{},
 		capacity: capacity,
 	}
+
+	ret.oldHead.next = ret.NewTail
+	ret.NewTail.pre = ret.oldHead
 
 	return ret
 }
 
-func (this *LRUCache) Get(key int) int {
-	if node, ok := this.where[key]; ok {
-		this.sortList.DeleteNode(node)
-		this.sortList.AddTail(node)
+func (l *LRUCache) addNewTail(node *DoubleListNode) {
+	node.pre = l.NewTail.pre
+	node.pre.next = node
+
+	l.NewTail.pre = node
+	node.next = l.NewTail
+}
+
+func (l *LRUCache) DeleteOldHead() {
+	if l.oldHead.next == l.NewTail {
+		return
+	}
+	l.oldHead.next = l.oldHead.next.next
+	l.oldHead.next.pre = l.oldHead
+}
+
+func (l *LRUCache) moveNewTail(node *DoubleListNode) {
+	if l.NewTail.pre == node {
+		return
+	}
+
+	node.next.pre = node.pre
+	node.pre.next = node.next
+	l.addNewTail(node)
+}
+
+func (l *LRUCache) Get(key int) int {
+	//defer printNode(l.oldHead.next)
+	if node, ok := l.where[key]; ok {
+		l.moveNewTail(node)
 		return node.val
 	}
 	return -1
 }
 
-func (this *LRUCache) Put(key int, value int) {
-	if node, ok := this.where[key]; ok {
+func (l *LRUCache) Put(key int, value int) {
+	//defer printNode(l.oldHead.next)
+	if node, ok := l.where[key]; ok {
 		node.val = value
-		this.sortList.DeleteNode(node)
-		this.sortList.AddTail(node)
+		l.moveNewTail(node)
 		return
 	}
-	if len(this.where) == this.capacity {
-		node := this.sortList.DeleteHead()
-		delete(this.where, node.key)
-		this.where[key] = node
+	if len(l.where) == l.capacity {
+		node := l.oldHead.next
+
+		delete(l.where, node.key)
+		l.where[key] = node
+
 		node.key = key
 		node.val = value
-		this.sortList.AddTail(node)
+
+		l.moveNewTail(node)
 		return
 	}
 	node := &DoubleListNode{
 		key: key,
 		val: value,
 	}
-	this.sortList.AddTail(node)
+	l.where[key] = node
+	l.addNewTail(node)
 }
 
 /**
