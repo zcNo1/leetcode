@@ -2,18 +2,22 @@ package l0105
 
 import . "gocode/pkg/tree"
 
-func buildTree_(preorder []int, left, right int, where map[int]int) *TreeNode {
-	if left > right {
+func buildTree_(preorder []int, inorder []int, where map[int]int) *TreeNode {
+	if preorder == nil || len(preorder) == 0 || inorder == nil || len(inorder) == 0 {
 		return nil
 	}
 
 	root := &TreeNode{
-		Val: preorder[left],
+		Val: preorder[0],
 	}
 
-	cur := where[preorder[left]]
-	root.Left = buildTree_(preorder, left, cur-1, where)
-	root.Right = buildTree_(preorder, cur+1, right, where)
+	if len(preorder) == 1 {
+		return root
+	}
+
+	leftLen := where[preorder[0]] - where[inorder[0]]
+	root.Left = buildTree_(preorder[1:leftLen+1], inorder[:leftLen], where)
+	root.Right = buildTree_(preorder[leftLen+1:], inorder[leftLen+1:], where)
 
 	return root
 }
@@ -25,4 +29,5 @@ func buildTree(preorder []int, inorder []int) *TreeNode {
 		where[i2] = i
 	}
 
+	return buildTree_(preorder, inorder, where)
 }

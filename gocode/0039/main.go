@@ -1,4 +1,4 @@
-package main
+package l0039
 
 import (
 	"fmt"
@@ -407,25 +407,6 @@ func groupAnagrams(strs []string) [][]string {
 	return ret
 }
 
-func tran(candidates []int, target int) [][]int {
-	var ret [][]int
-	if candidates[target] == 1 {
-		ret = append(ret, []int{target})
-	}
-
-	for i := 1; i <= target/2; i++ {
-		ret1 := tran(candidates, i)
-		ret2 := tran(candidates, target-i)
-		for _, i1 := range ret1 {
-			for _, i2 := range ret2 {
-				ret = append(ret, append(i1, i2...))
-			}
-		}
-	}
-
-	return ret
-}
-
 func transfer(matrix [][]int, minN, maxN int) {
 	if minN >= maxN {
 		return
@@ -806,17 +787,4 @@ func moveZeroes(nums []int) {
 	}
 
 	return
-}
-
-func combinationSum(candidates []int, target int) [][]int {
-	can := make([]int, 40)
-	for _, i2 := range candidates {
-		can[i2] = 1
-	}
-
-	return tran(can, target)
-}
-
-func main() {
-
 }
