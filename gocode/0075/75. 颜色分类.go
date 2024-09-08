@@ -1,5 +1,7 @@
 package l0075
 
+import "sort"
+
 func sortColors(nums []int) {
 	left, right := 0, len(nums)-1
 	const (
@@ -14,9 +16,10 @@ func sortColors(nums []int) {
 			continue
 		}
 		if nums[right] == blue {
-			right++
+			right--
 			continue
 		}
 	}
+	sort.Ints(nums)
 
 }
