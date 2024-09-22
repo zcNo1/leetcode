@@ -1,25 +1,31 @@
 package l0437
 
-import . "gocode/pkg/tree"
-
-var ori int
-
-func pathSumContain(root *TreeNode, t int) int {
-	return pathSumContain(root.Left, t-root.Val) + pathSumContain(root.Right, t-root.Val)
-}
+import (
+	"fmt"
+	. "gocode/pkg/tree"
+)
 
 func pathSum(root *TreeNode, targetSum int) int {
+	return pathSumContain(root, []int{0}, targetSum)
+}
+
+func pathSumContain(root *TreeNode, parentsSum []int, target int) int {
 	if root == nil {
 		return 0
 	}
-	var cnt int
-	if root.Val == targetSum {
-		cnt++
-	}0
 
-	pathSum(root.Left, targetSum-root.Val)
-	pathSum(root.Right, targetSum-root.Val)
+	ret := 0
+	sum := parentsSum[len(parentsSum)-1] + root.Val
+	for _, parentSum := range parentsSum {
+		if sum-parentSum == target {
+			fmt.Println(root.Val, sum, parentSum)
+			ret++
+		}
+	}
 
-	cnt += pathSum(root.Left, ori) + pathSum(root.Left, targetSum-root.Val) + pathSum(root.Right, targetSum) + pathSum(root.Right, targetSum-root.Val)
-	return cnt
+	parentsSum = append(parentsSum, sum)
+	left := pathSumContain(root.Left, parentsSum, target)
+	right := pathSumContain(root.Right, append([]int{}, parentsSum...), target)
+
+	return ret + left + right
 }
