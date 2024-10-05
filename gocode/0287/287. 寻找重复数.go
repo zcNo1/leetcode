@@ -1,13 +1,9 @@
 package l0287
 
 func findDuplicate(nums []int) int {
-	for i := 0; i < len(nums); i++ {
-		for j := i + 1; j < len(nums); j++ {
-			if nums[i] == nums[j] {
-				return nums[i]
-			}
-		}
+	ret := nums[0]
+	for ret != nums[ret] {
+		nums[ret], ret = ret, nums[ret]
 	}
-
-	return nums[0]
+	return ret
 }
