@@ -1,65 +1,64 @@
 package l0004
 
+import "fmt"
+
 func findMedianSortedArrays(nums1 []int, nums2 []int) float64 {
-	x := len(nums1) + len(nums2)
-	if x%2 == 1 {
-		return float64(findXNum(nums1, nums2, x/2))
+	m := len(nums1)
+	n := len(nums2)
+
+	if m+n == 1 {
+		if m == 1 {
+			return float64(nums1[0])
+		} else {
+			return float64(nums2[0])
+		}
+	}
+	k := (m + n) / 2
+
+	start1, end1, start2, end2 := -1, 0, -1, 0
+	var cur, pre int
+	for k > 1 && start1 < m-1 && start2 < n-1 {
+		fmt.Println(k, start1, start2)
+		end1 = start1 + k/2
+		end2 = start2 + k/2
+		if end1 >= m {
+			end1 = m - 1
+		}
+		if end2 >= n {
+			end2 = n - 1
+		}
+		if nums1[end1] > nums2[end2] {
+			k -= end2 - start2
+			start2 = end2
+		} else {
+			k -= end1 - start1
+			start1 = end1
+		}
+	}
+
+	if start1 == m-1 {
+		pre = nums2[start2+k]
+		cur = nums2[start2+k+1]
+	} else if start2 == n-1 {
+		pre = nums1[start1+k]
+		cur = nums1[start1+k+1]
 	} else {
-		return float64(findXNum(nums1, nums2, x/2)+findXNum(nums1, nums2, x/2-1)) / 2
-	}
-}
-
-func findXNum(nums1, nums2 []int, x int) int {
-	n1 := len(nums1)
-	n2 := len(nums2)
-
-	if n1 == 0 {
-		return nums2[x]
-	}
-
-	if n2 == 0 {
-		return nums1[x]
-	}
-
-	// 不相交
-	if nums2[0] > nums1[n1-1] {
-		if x < n1 {
-			return nums1[x]
+		pre = nums1[start1+1]
+		cur = nums2[start2+1]
+		if pre > cur {
+			pre, cur = cur, pre
+			if start2+2 < n && cur > nums2[start2+2] {
+				cur = nums2[start2+2]
+			}
 		} else {
-			return nums2[x-n1]
+			if start1+2 < m && cur > nums1[start1+2] {
+				cur = nums1[start1+2]
+			}
 		}
 	}
 
-	if nums1[0] > nums2[n2-1] {
-		if x < n2 {
-			return nums2[x]
-		} else {
-			return nums1[x-n2]
-		}
+	if (m+n)%2 == 0 {
+		return float64(cur+pre) / 2.0
 	}
-
-	// 相交
-	m1 := n1 / 2
-	m2 := n2 / 2
-	if nums1[m1] == nums2[m2] {
-		if x == m1+m2 {
-			return nums1[m1]
-		} else if x < m1+m2 {
-			return findXNum(nums1[:m1], nums2[:m2], x)
-		} else {
-			return findXNum(nums1[m1+1:], nums2[m2+1:], x-m1-m2)
-		}
-	} else if nums1[m1] > nums2[m2] {
-		if x > m1+m2 {
-			return findXNum(nums1, nums2[m2+1:], x-m2)
-		} else {
-			return findXNum(nums1[:m1], nums2, x-m1)
-		}
-	} else {
-		if x > m1+m2 {
-			return findXNum(nums1[m1+1:], nums2, x-m1)
-		} else {
-			return findXNum(nums1, nums2[:m2], x-m2)
-		}
-	}
+	return float64(cur)
 }
