@@ -1,5 +1,6 @@
 package _234
 
+// TODO
 func balancedString(s string) int {
 	if len(s)%4 != 0 {
 		return -1
@@ -24,7 +25,7 @@ func balancedString(s string) int {
 	var left, right, max int
 	left = -1
 	for right < len(s) && left < right {
-		if sByte[right]
+		//if sByte[right]
 	}
 
 	return max
